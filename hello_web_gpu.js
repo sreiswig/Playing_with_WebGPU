@@ -1,3 +1,4 @@
+const canvas = document.querySelector("canvas");
 const adapter = await navigator.gpu.requestAdapter();
 
 if (!navigator.gpu) {
