@@ -18,7 +18,7 @@ const pass = encoder.beginRenderPass({
      view: context.getCurrentTexture().createView(),
      loadOp: "clear",
      storeOp: "store",
-  ]}
+  }]
 });
 
 pass.end();
