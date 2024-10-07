@@ -12,6 +12,7 @@ context.configure({
   device: device,
   format: canvasFormat,
 });
+const GRID_SIZE = 4;
 const vertices = new Float32Array([
   //   X,    Y,
     -0.8, -0.8,
@@ -22,6 +23,15 @@ const vertices = new Float32Array([
      0.8,  0.8,
     -0.8,  0.8,
 ]);
+
+// Create a uniform buffer that describes the grid.
+const uniformArray = new Float32Array([GRID_SIZE, GRID_SIZE]);
+const uniformBuffer = device.createBuffer({
+  label: "Grid Uniforms",
+  size: uniformArray.byteLength,
+  usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+});
+device.queue.writeBuffer(uniformBuffer, 0, uniformArray);
 
 const vertexBuffer = device.createBuffer({
   label: "Cell vertices",
@@ -43,9 +53,12 @@ const vertexBufferLayout = {
 const cellShaderModule = device.createShaderModule({
   label: "Cell shader",
   code: `
+    @group(0) @binding(0) var<uniform> grid: vec2f;
+
     @vertex
-    fn vertexMain(@location(0) pos: vec2f) -> @builtin(position) vec4f {
-      return vec4f(pos, 0, 1);
+    fn vertexMain(@location(0) pos: vec2f) -> 
+      @builtin(position) vec4f {
+      return vec4f(pos / grid, 0, 1);
     }
 
     @fragment
@@ -72,6 +85,15 @@ const cellPipeline = device.createRenderPipeline({
   }
 });
 
+const bindGroup = device.createBindGroup({
+  label: "Cell renderer bind group",
+  layout: cellPipeline.getBindGroupLayout(0),
+  entries: [{
+    binding: 0,
+    resource: { buffer: uniformBuffer }
+  }],
+});
+
 const encoder = device.createCommandEncoder();
 const pass = encoder.beginRenderPass({
   colorAttachments: [{
@@ -84,6 +106,7 @@ const pass = encoder.beginRenderPass({
 
 pass.setPipeline(cellPipeline);
 pass.setVertexBuffer(0, vertexBuffer);
+pass.setBindGroup(0, bindGroup);
 pass.draw(vertices.length / 2);
 
 pass.end();
