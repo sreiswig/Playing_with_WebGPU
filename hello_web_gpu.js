@@ -145,6 +145,11 @@ const simulationShaderModule = device.createShaderModule({
     }`
 });
 
+const pipelineLayout = device.createPipelineLayout({
+  label: "Cell Pipeline Layout",
+  bindGroupLayouts: [ bindGroupLayout ],
+});
+
 const cellPipeline = device.createRenderPipeline({
   label: "Cell pipeline",
   layout: "pipelineLayout",
@@ -213,11 +218,6 @@ const bindGroups = [
     }],
   }),
 ];
-
-const pipelineLayout = device.createPipelineLayout({
-  label: "Cell Pipeline Layout",
-  bindGroupLayouts: [ bindGroupLayout ],
-});
 
 // Create a compute pipeline that updates the game state.
 const simulationPipeline = device.createComputePipeline({
