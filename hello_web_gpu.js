@@ -24,6 +24,19 @@ const vertices = new Float32Array([
     -0.8,  0.8,
 ]);
 
+// Create an array representing the active state of each cell
+const cellStateArray = new Uint32Array(GRID_SIZE, GRID_SIZE);
+const cellStateStorage = device.createBuffer({
+  label: "Cell State",
+  size: cellStateArray.byteLength,
+  usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+});
+
+for (let i = 0; i < cellStateArray.length; i+=3) {
+  cellStateArray[i] = 1;
+}
+device.queue.writeBuffer(cellStateStorage, 0, cellStateArray);
+
 // Create a uniform buffer that describes the grid.
 const uniformArray = new Float32Array([GRID_SIZE, GRID_SIZE]);
 const uniformBuffer = device.createBuffer({
@@ -68,13 +81,15 @@ const cellShaderModule = device.createShaderModule({
     };
 
     @group(0) @binding(0) var<uniform> grid: vec2f;
+    @group(0) @binding(1) var<storage> cellState: array<u32>;
 
     @vertex
     fn vertexMain(input: VertexInput) -> VertexOutput {
       let i = f32(input.instance);
       let cell = vec2f(i % grid.x, floor(i / grid.x));
+      let state = f32(cellState[instance]);
       let cellOffset = cell / grid * 2;
-      let gridPos = (input.pos + 1) / grid - 1 + cellOffset;
+      let gridPos = (pos*state+1) / grid - 1 + cellOffset;
 
       var output: VertexOutput;
       output.pos = vec4f(gridPos, 0, 1);
@@ -113,6 +128,10 @@ const bindGroup = device.createBindGroup({
   entries: [{
     binding: 0,
     resource: { buffer: uniformBuffer }
+  },
+  {
+    binding: 1,
+    resource: { buffer: cellStateStorage }
   }],
 });
 
