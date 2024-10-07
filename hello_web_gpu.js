@@ -112,7 +112,7 @@ const pass = encoder.beginRenderPass({
 pass.setPipeline(cellPipeline);
 pass.setVertexBuffer(0, vertexBuffer);
 pass.setBindGroup(0, bindGroup);
-pass.draw(vertices.length / 2);
+pass.draw(vertices.length / 2, GRID_SIZE * GRID_SIZE);
 
 pass.end();
 
