@@ -71,10 +71,10 @@ const cellShaderModule = device.createShaderModule({
 
     @vertex
     fn vertexMain(input: VertexInput) -> VertexOutput {
-      let i = f32(instance);
+      let i = f32(input.instance);
       let cell = vec2f(i % grid.x, floor(i / grid.x));
       let cellOffset = cell / grid * 2;
-      let gridPos = (pos + 1) / grid - 1 + cellOffset;
+      let gridPos = (input.pos + 1) / grid - 1 + cellOffset;
 
       var output: VertexOutput;
       output.pos = vec4f(gridPos, 0, 1);
