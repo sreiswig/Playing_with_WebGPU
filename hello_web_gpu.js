@@ -12,7 +12,7 @@ context.configure({
   device: device,
   format: canvasFormat,
 });
-const GRID_SIZE = 4;
+const GRID_SIZE = 32;
 const vertices = new Float32Array([
   //   X,    Y,
     -0.8, -0.8,
@@ -50,6 +50,16 @@ const vertexBufferLayout = {
   }],
 };
 
+struct VertexInput {
+  @location(0) pos: vec2f,
+  @builtin(instance_index) instance: u32,
+};
+
+struct VertexOutput {
+  @builtin(position) pos: vec4f,
+  @location(0) cell: vec2f,
+};
+
 const cellShaderModule = device.createShaderModule({
   label: "Cell shader",
   code: `
@@ -63,12 +73,20 @@ const cellShaderModule = device.createShaderModule({
       let cell = vec2f(i % grid.x, floor(i / grid.x));
       let cellOffset = cell / grid * 2;
       let gridPos = (pos + 1) / grid - 1 + cellOffset;
-      return vec4f(gridPos, 0, 1);
+
+      var output: VertexOutput;
+      output.pos = vec4f(gridPos, 0, 1);
+      output.cell = cell;
+      return output;
     }
 
+    struct FragInput {
+      @location(0) cell: vec2f,
+    };
+
     @fragment
-    fn fragmentMain() -> @location(0) vec4f {
-      return vec4f(1,0,0,1);
+    fn fragmentMain(input: FragInput) -> @location(0) vec4f {
+      return vec4f(cell, 0, 1);
     }
   `
 });
