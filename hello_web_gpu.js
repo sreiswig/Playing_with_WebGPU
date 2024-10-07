@@ -145,6 +145,25 @@ const simulationShaderModule = device.createShaderModule({
     }`
 });
 
+// Create the bind group layout and pipeline layout.
+const bindGroupLayout = device.createBindGroupLayout({
+  label: "Cell Bind Group Layout",
+  entries: [{
+    binding: 0,
+    // Add GPUShaderStage.FRAGMENT here if you are using the `grid` uniform in the fragment shader.
+    visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
+    buffer: {} // Grid uniform buffer
+  }, {
+    binding: 1,
+    visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
+    buffer: { type: "read-only-storage"} // Cell state input buffer
+  }, {
+    binding: 2,
+    visibility: GPUShaderStage.COMPUTE,
+    buffer: { type: "storage"} // Cell state output buffer
+  }]
+});
+
 const pipelineLayout = device.createPipelineLayout({
   label: "Cell Pipeline Layout",
   bindGroupLayouts: [ bindGroupLayout ],
@@ -165,25 +184,6 @@ const cellPipeline = device.createRenderPipeline({
       format: canvasFormat
     }]
   }
-});
-
-// Create the bind group layout and pipeline layout.
-const bindGroupLayout = device.createBindGroupLayout({
-  label: "Cell Bind Group Layout",
-  entries: [{
-    binding: 0,
-    // Add GPUShaderStage.FRAGMENT here if you are using the `grid` uniform in the fragment shader.
-    visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
-    buffer: {} // Grid uniform buffer
-  }, {
-    binding: 1,
-    visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
-    buffer: { type: "read-only-storage"} // Cell state input buffer
-  }, {
-    binding: 2,
-    visibility: GPUShaderStage.COMPUTE,
-    buffer: { type: "storage"} // Cell state output buffer
-  }]
 });
 
 // Create a bind group to pass the grid uniforms into the pipeline
