@@ -84,7 +84,8 @@ const cellShaderModule = device.createShaderModule({
 
     @fragment
     fn fragmentMain(input: FragInput) -> @location(0) vec4f {
-      return vec4f(input.cell/grid, 0, 1);
+      let c = input.cell / grid;
+      return vec4f(c, 1.c.x, 1);
     }
   `
 });
