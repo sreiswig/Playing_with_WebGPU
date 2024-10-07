@@ -64,9 +64,9 @@ const cellShaderModule = device.createShaderModule({
       let cellOffset = cell / grid * 2;
       let gridPos = (pos + 1) / grid - 1 + cellOffset;
 
-      const VertexOutput = {
-        @builtin(position) pos: vec4f(gridPos, 0, 1),
-        @location(0) cell: cell,
+      const VertexOutput: VertexOutput = {
+        pos: vec4f(gridPos, 0, 1),
+        cell: cell
       };
       return VertexOutput;
     }
