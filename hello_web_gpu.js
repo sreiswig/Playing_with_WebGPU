@@ -238,7 +238,7 @@ function updateGrid() {
   const computePass = encoder.beginComputePass();
   
   computePass.setPipeline(simulationPipeline);
-  computePass.setBindGroup(0, bindGroups[step % 2];
+  computePass.setBindGroup(0, bindGroups[step % 2]);
 
   const workgroupCount = Math.ceil(GRID_SIZE / WORKGROUP_SIZE);
   computePass.dispatchWorkgroups(workgroupCount, workgroupCount);
