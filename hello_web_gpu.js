@@ -171,7 +171,7 @@ const pipelineLayout = device.createPipelineLayout({
 
 const cellPipeline = device.createRenderPipeline({
   label: "Cell pipeline",
-  layout: "pipelineLayout",
+  layout: pipelineLayout,
   vertex: {
     module: cellShaderModule,
     entryPoint: "vertexMain",
