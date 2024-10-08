@@ -134,8 +134,9 @@ const simulationShaderModule = device.createShaderModule({
     fn cellIndex(cell: vec2u) -> u32 {
       return cell.y * u32(grid.x) + cell.x;
     }
-
-    @compute @workgroup_size(${WORKGROUP_SIZE}, ${WORKGROUP_SIZE})
+    
+    @compute 
+    @workgroup_size(${WORKGROUP_SIZE}, ${WORKGROUP_SIZE})
     fn computeMain(@builtin(global_invocation_id) cell: vec3u) {
       if (cellStateIn[cellIndex(cell.xy)] == 1) {
         cellStateOut[cellIndex(cell.xy)] = 0;
@@ -151,7 +152,7 @@ const bindGroupLayout = device.createBindGroupLayout({
   entries: [{
     binding: 0,
     // Add GPUShaderStage.FRAGMENT here if you are using the `grid` uniform in the fragment shader.
-    visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE,
+    visibility: GPUShaderStage.VERTEX | GPUShaderStage.COMPUTE | GPUShaderStage.FRAGMENT,
     buffer: {} // Grid uniform buffer
   }, {
     binding: 1,
