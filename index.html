@@ -4,9 +4,16 @@
   <head>
 	  <meta charset="utf-8">
 	  <title>WebGPU Hello</title>
+    <script type="text/javascript">
+      function resize_canvas() {
+        canvas = document.getElementById("game_of_life");
+        if (canvas.width < window.innerWidth) { canvas.width = window.innerWidth; }
+        if (canvas.height < window.innerHeight) { canvas.height = window.innerHeight; }
+      }
+    </script>
   </head>
   <body>
-	  <canvas width="1024" height="1024"></canvas>
+	  <canvas id="game_of_life"></canvas>
 	  <p>Made following this <a href="https://codelabs.developers.google.com/your-first-webgpu-app">guide</a></p>
   </body>
   <script src="hello_web_gpu.js" type="module" ></script>
